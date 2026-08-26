@@ -9,7 +9,6 @@
 #include <QTimer>
 #include "../core/types.h"
 #include "../core/document.h"
-#include "../core/laserengine.h"
 #include "../core/toolstatemanager.h"
 
 namespace LayerShellQt {
@@ -21,7 +20,7 @@ namespace DrawOnScreen {
 class CanvasWindow : public QRasterWindow {
     Q_OBJECT
 public:
-    explicit CanvasWindow(CanvasDocument* doc, ToolStateManager* stateMgr, LaserPointerEngine* laserEngine);
+    explicit CanvasWindow(CanvasDocument* doc, ToolStateManager* stateMgr);
     ~CanvasWindow() override;
 
     void updateScreenGeometry();
@@ -39,7 +38,6 @@ protected:
 public slots:
     void onInteractionModeChanged(int mode);
     void onDocumentChanged();
-    void onLaserDirtyRect(const QRectF& dirtyRect);
     void setToolbarRect(const QRect& rect);
     void onGhostTick();
     void onCursorBlink();
@@ -56,7 +54,6 @@ private:
 
     CanvasDocument* m_document = nullptr;
     ToolStateManager* m_stateMgr = nullptr;
-    LaserPointerEngine* m_laserEngine = nullptr;
     LayerShellQt::Window* m_layerWindow = nullptr;
 
     QRect m_toolbarRect;

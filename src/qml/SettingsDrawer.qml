@@ -102,7 +102,7 @@ Item {
                         }
                     }
 
-                    // Tab 1: Lazer & Efekt
+                    // Tab 1: Efekt & Yazı
                     Rectangle {
                         width: 100
                         height: 24
@@ -113,7 +113,7 @@ Item {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "⚡ Lazer & Efekt"
+                            text: "👻 Efekt & Yazı"
                             font.pixelSize: 10
                             font.bold: root.currentTab === 1
                             color: root.currentTab === 1 ? "#38bdf8" : "#94a3b8"
@@ -304,36 +304,11 @@ Item {
                 }
             }
 
-            // ==================== TAB 1: LAZER & EFEKTLER ====================
+            // ==================== TAB 1: EFEKTLER & YAZI ====================
             Column {
                 visible: root.currentTab === 1
                 width: parent.width
                 spacing: 12
-
-                // Laser Fade Duration
-                Column {
-                    width: parent.width
-                    spacing: 2
-                    Row {
-                        width: parent.width
-                        Text { text: "⚡ Lazer İzi Kaybolma Süresi:"; font.pixelSize: 11; font.bold: true; color: "#f8fafc" }
-                        Item { width: 40 }
-                        Text {
-                            text: (toolState.laserFadeDuration / 1000.0).toFixed(1) + " sn"
-                            font.pixelSize: 11
-                            font.bold: true
-                            color: "#f43f5e"
-                        }
-                    }
-                    Slider {
-                        width: parent.width
-                        from: 100
-                        to: 3000
-                        stepSize: 100
-                        value: toolState.laserFadeDuration
-                        onMoved: toolState.setLaserFadeDurationMs(value)
-                    }
-                }
 
                 // Ghost Pen Lifetime
                 Column {

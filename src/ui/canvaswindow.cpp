@@ -12,11 +12,10 @@
 
 namespace DrawOnScreen {
 
-CanvasWindow::CanvasWindow(CanvasDocument* doc, ToolStateManager* stateMgr, LaserPointerEngine* laserEngine)
+CanvasWindow::CanvasWindow(CanvasDocument* doc, ToolStateManager* stateMgr)
     : QRasterWindow()
     , m_document(doc)
     , m_stateMgr(stateMgr)
-    , m_laserEngine(laserEngine)
 {
     setFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::BypassWindowManagerHint);
 
@@ -48,11 +47,7 @@ CanvasWindow::CanvasWindow(CanvasDocument* doc, ToolStateManager* stateMgr, Lase
     connect(m_stateMgr, &ToolStateManager::interactionModeChanged, this, &CanvasWindow::onInteractionModeChanged);
     connect(m_stateMgr, &ToolStateManager::backgroundModeChanged, this, [this](int) { update(); });
     connect(m_stateMgr, &ToolStateManager::areDrawingsVisibleChanged, this, [this](bool) { update(); });
-    connect(m_stateMgr, &ToolStateManager::laserFadeDurationChanged, this, [this](int ms) {
-        m_laserEngine->setFadeDuration(ms);
-    });
     connect(m_document, &CanvasDocument::documentChanged, this, &CanvasWindow::onDocumentChanged);
-    connect(m_laserEngine, &LaserPointerEngine::frameReady, this, &CanvasWindow::onLaserDirtyRect);
 
     connect(&m_textCursorTimer, &QTimer::timeout, this, &CanvasWindow::onCursorBlink);
     connect(&m_ghostTimer, &QTimer::timeout, this, &CanvasWindow::onGhostTick);
@@ -131,15 +126,6 @@ void CanvasWindow::applyMaskForMode()
 void CanvasWindow::onDocumentChanged()
 {
     update();
-}
-
-void CanvasWindow::onLaserDirtyRect(const QRectF& dirtyRect)
-{
-    if (!dirtyRect.isNull()) {
-        update(dirtyRect.toAlignedRect());
-    } else {
-        update();
-    }
 }
 
 void CanvasWindow::onCursorBlink()
@@ -250,7 +236,7 @@ void CanvasWindow::paintEvent(QPaintEvent* ev)
     }
 
     // 4. Render active in-progress stroke / shape preview
-    if (m_isDrawing && m_stateMgr->currentTool() != ToolType::Laser && m_stateMgr->currentTool() != ToolType::Eraser) {
+    if (m_isDrawing && m_stateMgr->currentTool() != ToolType::Eraser) {
         const auto tool = m_stateMgr->currentTool();
         const QColor col = m_stateMgr->currentColor();
         const qreal baseW = m_stateMgr->currentWidth();
@@ -286,12 +272,7 @@ void CanvasWindow::paintEvent(QPaintEvent* ev)
         }
     }
 
-    // 6. Render laser pointer trail
-    if (m_laserEngine->isActive()) {
-        m_laserEngine->render(p, m_stateMgr->currentColor());
-    }
-
-    // 7. Photoshop-Style In-Place Text Editor
+    // 5. Photoshop-Style In-Place Text Editor
     if (m_isEditingText) {
         p.save();
         QFont font;
@@ -491,9 +472,7 @@ void CanvasWindow::handleStartPoint(const QPointF& pos, qreal pressure, qreal ti
     m_activePoints.clear();
     m_activePoints.push_back(StrokePoint(pos, pressure, tiltX, tiltY));
 
-    if (tool == ToolType::Laser) {
-        m_laserEngine->addPoint(pos, pressure);
-    } else if (tool == ToolType::Eraser) {
+    if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::Pen || tool == ToolType::Highlighter || tool == ToolType::GhostPen) {
         m_activePreviewPath = Smoother::buildSmoothPath(m_activePoints);
@@ -507,9 +486,7 @@ void CanvasWindow::handleMovePoint(const QPointF& pos, qreal pressure, qreal til
     m_activePoints.push_back(StrokePoint(pos, pressure, tiltX, tiltY));
 
     const auto tool = m_stateMgr->currentTool();
-    if (tool == ToolType::Laser) {
-        m_laserEngine->addPoint(pos, pressure);
-    } else if (tool == ToolType::Eraser) {
+    if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::Pen || tool == ToolType::Highlighter || tool == ToolType::GhostPen) {
         m_activePreviewPath = Smoother::buildSmoothPath(m_activePoints);
@@ -533,9 +510,7 @@ void CanvasWindow::handleReleasePoint(const QPointF& pos)
 {
     const auto tool = m_stateMgr->currentTool();
 
-    if (tool == ToolType::Laser) {
-        m_laserEngine->addPoint(pos, m_lastPressure);
-    } else if (tool == ToolType::Eraser) {
+    if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::GhostPen && m_activePoints.size() >= 1) {
         Stroke s;

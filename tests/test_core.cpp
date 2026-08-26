@@ -5,7 +5,6 @@
 #include "core/types.h"
 #include "core/smoother.h"
 #include "core/document.h"
-#include "core/laserengine.h"
 #include "core/toolstatemanager.h"
 
 using namespace DrawOnScreen;
@@ -124,10 +123,6 @@ void testToolStateManager()
 
     state.setInteractionMode(InteractionMode::Drawing);
     assert(state.interactionMode() == InteractionMode::Drawing);
-
-    state.setCurrentTool(ToolType::Laser);
-    assert(state.currentTool() == ToolType::Laser);
-    assert(state.isLaserActive());
 
     state.toggleInteractionMode();
     assert(state.interactionMode() == InteractionMode::DesktopPassthrough);

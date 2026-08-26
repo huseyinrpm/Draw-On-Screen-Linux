@@ -6,7 +6,6 @@
 
 #include "core/document.h"
 #include "core/toolstatemanager.h"
-#include "core/laserengine.h"
 #include "ui/overlaywindow.h"
 #include "system/shortcutmanager.h"
 #include "system/screenshotmanager.h"
@@ -32,10 +31,9 @@ int main(int argc, char** argv)
     // Core instances
     DrawOnScreen::CanvasDocument document;
     DrawOnScreen::ToolStateManager stateManager;
-    DrawOnScreen::LaserPointerEngine laserEngine;
 
     // Unified Full-Screen Overlay (Instant 0ms dragging + hardware-accelerated drawing)
-    DrawOnScreen::OverlayWindow overlayWindow(&stateManager, &document, &laserEngine);
+    DrawOnScreen::OverlayWindow overlayWindow(&stateManager, &document);
 
     // System integrations
     DrawOnScreen::ShortcutManager shortcutManager(&stateManager);

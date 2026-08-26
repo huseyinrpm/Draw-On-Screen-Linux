@@ -2,7 +2,6 @@
 #include "canvasitem.h"
 #include "../core/toolstatemanager.h"
 #include "../core/document.h"
-#include "../core/laserengine.h"
 #include <LayerShellQt/window.h>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -12,11 +11,10 @@
 
 namespace DrawOnScreen {
 
-OverlayWindow::OverlayWindow(ToolStateManager* stateMgr, CanvasDocument* doc, LaserPointerEngine* laserEngine, QWindow* parent)
+OverlayWindow::OverlayWindow(ToolStateManager* stateMgr, CanvasDocument* doc, QWindow* parent)
     : QQuickView(parent)
     , m_stateMgr(stateMgr)
     , m_document(doc)
-    , m_laserEngine(laserEngine)
 {
     qmlRegisterType<CanvasItem>("DrawOnScreen", 1, 0, "CanvasItem");
 
@@ -44,7 +42,6 @@ OverlayWindow::OverlayWindow(ToolStateManager* stateMgr, CanvasDocument* doc, La
 
     rootContext()->setContextProperty(QStringLiteral("toolState"), m_stateMgr);
     rootContext()->setContextProperty(QStringLiteral("canvasDoc"), m_document);
-    rootContext()->setContextProperty(QStringLiteral("laserEngine"), m_laserEngine);
     rootContext()->setContextProperty(QStringLiteral("overlayWindow"), this);
 
     connect(m_document, &CanvasDocument::undoRedoAvailabilityChanged, this, [this]() {

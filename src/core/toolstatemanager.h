@@ -21,13 +21,11 @@ class ToolStateManager : public QObject {
     Q_PROPERTY(bool isToolbarVisible READ isToolbarVisible WRITE setIsToolbarVisible NOTIFY isToolbarVisibleChanged)
     Q_PROPERTY(bool isVerticalLayout READ isVerticalLayout WRITE setIsVerticalLayout NOTIFY isVerticalLayoutChanged)
     Q_PROPERTY(bool areDrawingsVisible READ areDrawingsVisible WRITE setAreDrawingsVisible NOTIFY areDrawingsVisibleChanged)
-    Q_PROPERTY(int laserFadeDuration READ laserFadeDuration WRITE setLaserFadeDuration NOTIFY laserFadeDurationChanged)
     Q_PROPERTY(int ghostDurationMs READ ghostDurationMs WRITE setGhostDurationMs NOTIFY ghostDurationMsChanged)
     Q_PROPERTY(int savedToolbarX READ savedToolbarX WRITE setSavedToolbarX NOTIFY savedToolbarXChanged)
     Q_PROPERTY(int savedToolbarY READ savedToolbarY WRITE setSavedToolbarY NOTIFY savedToolbarYChanged)
     Q_PROPERTY(QString textInput READ textInput WRITE setTextInput NOTIFY textInputChanged)
     Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
-    Q_PROPERTY(bool isLaserActive READ isLaserActive NOTIFY isLaserActiveChanged)
     Q_PROPERTY(bool isTextEditorActive READ isTextEditorActive WRITE setIsTextEditorActive NOTIFY isTextEditorActiveChanged)
     Q_PROPERTY(QString activeTextContent READ activeTextContent WRITE setActiveTextContent NOTIFY activeTextContentChanged)
 
@@ -82,9 +80,6 @@ public:
     bool areDrawingsVisible() const { return m_areDrawingsVisible; }
     void setAreDrawingsVisible(bool visible);
 
-    int laserFadeDuration() const { return m_laserFadeDuration; }
-    void setLaserFadeDuration(int ms);
-
     int ghostDurationMs() const { return m_ghostDurationMs; }
     void setGhostDurationMs(int ms);
 
@@ -99,8 +94,6 @@ public:
 
     int fontSize() const { return m_fontSize; }
     void setFontSize(int size);
-
-    bool isLaserActive() const { return m_currentTool == ToolType::Laser; }
 
     bool isTextEditorActive() const { return m_isTextEditorActive; }
     void setIsTextEditorActive(bool active);
@@ -135,7 +128,6 @@ public:
     Q_INVOKABLE void setInteractionModeEnum(int mode) { setInteractionModeInt(mode); }
     Q_INVOKABLE void toggleOrientation();
     Q_INVOKABLE void toggleDrawingsVisibility();
-    Q_INVOKABLE void setLaserFadeDurationMs(int ms) { setLaserFadeDuration(ms); }
     Q_INVOKABLE void setGhostDuration(int ms) { setGhostDurationMs(ms); }
     Q_INVOKABLE void cycleBackgroundMode();
     Q_INVOKABLE void setBackgroundModeEnum(int mode) { setBackgroundModeInt(mode); }
@@ -164,13 +156,11 @@ signals:
     void isToolbarVisibleChanged(bool visible);
     void isVerticalLayoutChanged(bool vertical);
     void areDrawingsVisibleChanged(bool visible);
-    void laserFadeDurationChanged(int ms);
     void ghostDurationMsChanged(int ms);
     void savedToolbarXChanged(int x);
     void savedToolbarYChanged(int y);
     void textInputChanged(const QString& text);
     void fontSizeChanged(int size);
-    void isLaserActiveChanged(bool active);
     void isTextEditorActiveChanged(bool active);
     void activeTextContentChanged(const QString& text);
 
@@ -200,7 +190,6 @@ private:
     bool m_isToolbarVisible = true;
     bool m_isVerticalLayout = false;
     bool m_areDrawingsVisible = true;
-    int m_laserFadeDuration = 500;
     int m_ghostDurationMs = 3000;
     int m_savedToolbarX = 80;
     int m_savedToolbarY = 80;

@@ -3,9 +3,9 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
-#include <QGuiApplication>
+#include <QFontMetrics>
 #include <QDateTime>
-#include <cmath>
+#include <algorithm>
 
 namespace DrawOnScreen {
 
@@ -13,7 +13,6 @@ CanvasItem::CanvasItem(QQuickItem* parent)
     : QQuickPaintedItem(parent)
 {
     setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
-    setAcceptHoverEvents(true);
     setAntialiasing(true);
     setOpaquePainting(false);
     setSmooth(true);
@@ -51,27 +50,9 @@ void CanvasItem::setStateManager(ToolStateManager* mgr)
         if (m_stateMgr) {
             connect(m_stateMgr, &ToolStateManager::backgroundModeChanged, this, [this](int) { update(); });
             connect(m_stateMgr, &ToolStateManager::areDrawingsVisibleChanged, this, [this](bool) { update(); });
-            connect(m_stateMgr, &ToolStateManager::laserFadeDurationChanged, this, [this](int ms) {
-                if (m_laserEngine) m_laserEngine->setFadeDuration(ms);
-            });
             connect(m_stateMgr, &ToolStateManager::currentToolChanged, this, [this](int) { update(); });
         }
         emit stateManagerChanged();
-        update();
-    }
-}
-
-void CanvasItem::setLaserEngine(LaserPointerEngine* engine)
-{
-    if (m_laserEngine != engine) {
-        if (m_laserEngine) {
-            disconnect(m_laserEngine, nullptr, this, nullptr);
-        }
-        m_laserEngine = engine;
-        if (m_laserEngine) {
-            connect(m_laserEngine, &LaserPointerEngine::frameReady, this, &CanvasItem::onLaserDirtyRect);
-        }
-        emit laserEngineChanged();
         update();
     }
 }
@@ -83,12 +64,6 @@ void CanvasItem::setToolbarRect(const QRect& rect)
         emit toolbarRectChanged();
         update();
     }
-}
-
-void CanvasItem::onLaserDirtyRect(const QRectF& dirtyRect)
-{
-    Q_UNUSED(dirtyRect);
-    update();
 }
 
 void CanvasItem::onCursorBlink()
@@ -108,15 +83,22 @@ void CanvasItem::onGhostTick()
 
     const qint64 now = QDateTime::currentMSecsSinceEpoch();
     const qint64 lifetimeMs = m_stateMgr ? m_stateMgr->ghostDurationMs() : 3000;
+    const qint64 fadeStartTimeMs = static_cast<qint64>(lifetimeMs * 0.6);
+    const qint64 fadeDurationMs = lifetimeMs - fadeStartTimeMs;
 
     for (auto& s : m_ghostStrokes) {
-        const qint64 age = now - s.createdAtMs;
-        s.opacity = qMax(0.0, 1.0 - static_cast<double>(age) / lifetimeMs);
+        const qint64 elapsed = now - s.createdAtMs;
+        if (elapsed < fadeStartTimeMs) {
+            s.opacity = 1.0;
+        } else {
+            const qreal progress = static_cast<qreal>(elapsed - fadeStartTimeMs) / fadeDurationMs;
+            s.opacity = qMax(0.0, 1.0 - progress);
+        }
     }
 
     m_ghostStrokes.erase(
         std::remove_if(m_ghostStrokes.begin(), m_ghostStrokes.end(), [](const Stroke& s) {
-            return s.opacity <= 0.02;
+            return s.opacity <= 0.01;
         }),
         m_ghostStrokes.end()
     );
@@ -128,7 +110,7 @@ void CanvasItem::commitCurrentText()
 {
     if (!m_isEditingText) return;
 
-    if (!m_currentEditText.trimmed().isEmpty() && m_document && m_stateMgr) {
+    if (!m_currentEditText.isEmpty() && m_document && m_stateMgr) {
         Stroke s;
         s.tool = ToolType::Text;
         s.color = m_stateMgr->currentColor();
@@ -137,10 +119,13 @@ void CanvasItem::commitCurrentText()
         font.setPointSize(m_stateMgr->fontSize());
         font.setBold(true);
         s.font = font;
-        s.points.push_back(StrokePoint(m_textEditPos));
+
         QFontMetrics fm(font);
-        s.cachedBoundingRect = QRectF(m_textEditPos.x(), m_textEditPos.y() - fm.ascent(),
-                                      fm.horizontalAdvance(m_currentEditText), fm.height());
+        QRectF bounds = fm.boundingRect(s.text);
+        bounds.moveTo(m_textEditPos.x(), m_textEditPos.y() - fm.ascent());
+        s.cachedBoundingRect = bounds;
+
+        s.points.push_back(StrokePoint(m_textEditPos));
         m_document->addStroke(s);
     }
 
@@ -182,7 +167,7 @@ void CanvasItem::paint(QPainter* painter)
         m_document->render(*painter, itemRect);
     }
 
-    // 4. Render Ghost Pen Fading Strokes
+    // 3. Render Ghost Pen Fading Strokes
     for (const auto& s : m_ghostStrokes) {
         painter->save();
         QColor ghostCol = s.color;
@@ -194,8 +179,8 @@ void CanvasItem::paint(QPainter* painter)
         painter->restore();
     }
 
-    // 5. Render active in-progress stroke / shape preview
-    if (m_isDrawing && m_stateMgr->currentTool() != ToolType::Laser && m_stateMgr->currentTool() != ToolType::Eraser) {
+    // 4. Render active in-progress stroke / shape preview
+    if (m_isDrawing && m_stateMgr->currentTool() != ToolType::Eraser) {
         const auto tool = m_stateMgr->currentTool();
         const QColor col = m_stateMgr->currentColor();
         const qreal baseW = m_stateMgr->currentWidth();
@@ -231,12 +216,7 @@ void CanvasItem::paint(QPainter* painter)
         }
     }
 
-    // 6. Render laser pointer trail
-    if (m_laserEngine && m_laserEngine->isActive()) {
-        m_laserEngine->render(*painter, m_stateMgr->currentColor());
-    }
-
-    // 7. Photoshop-Style In-Place Text Editor
+    // 5. Photoshop-Style In-Place Text Editor
     if (m_isEditingText) {
         painter->save();
         QFont font;
@@ -245,62 +225,68 @@ void CanvasItem::paint(QPainter* painter)
         painter->setFont(font);
 
         QFontMetrics fm(font);
-        const int textW = qMax(40, fm.horizontalAdvance(m_currentEditText));
-        const int textH = fm.height();
-        const QRectF boxRect(m_textEditPos.x() - 4, m_textEditPos.y() - fm.ascent() - 4, textW + 16, textH + 8);
+        const int fontHeight = fm.height();
+        const int fontAscent = fm.ascent();
+        const int textWidth = fm.horizontalAdvance(m_currentEditText.isEmpty() ? QStringLiteral(" ") : m_currentEditText);
 
-        QPen dashedPen(QColor(56, 189, 248), 1.5, Qt::DashLine);
-        painter->setPen(dashedPen);
-        painter->setBrush(QColor(15, 23, 42, 140));
-        painter->drawRoundedRect(boxRect, 4, 4);
+        QRectF textRect(m_textEditPos.x() - 4, m_textEditPos.y() - fontAscent - 4, qMax(textWidth + 24, 120), fontHeight + 8);
 
+        // Semi-transparent backdrop card
+        painter->fillRect(textRect, QColor(15, 23, 42, 220));
+
+        // Dashed border like Photoshop/Illustrator
+        QPen borderPen(QColor(56, 189, 248), 1.5, Qt::DashLine);
+        painter->setPen(borderPen);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRoundedRect(textRect, 4, 4);
+
+        // Draw current text
         painter->setPen(m_stateMgr->currentColor());
         painter->drawText(m_textEditPos, m_currentEditText);
 
+        // Blinking Text Cursor
         if (m_cursorVisible) {
-            const int cursorX = m_textEditPos.x() + fm.horizontalAdvance(m_currentEditText);
-            const int cursorY1 = m_textEditPos.y() - fm.ascent();
-            const int cursorY2 = m_textEditPos.y() + fm.descent();
-            QPen cursorPen(m_stateMgr->currentColor(), 2.0);
+            int cursorX = m_textEditPos.x() + fm.horizontalAdvance(m_currentEditText) + 2;
+            QPen cursorPen(QColor(248, 250, 252), 2);
             painter->setPen(cursorPen);
-            painter->drawLine(cursorX + 2, cursorY1, cursorX + 2, cursorY2);
+            painter->drawLine(cursorX, m_textEditPos.y() - fontAscent, cursorX, m_textEditPos.y() + (fontHeight - fontAscent));
         }
 
-        QFont hintFont = painter->font();
-        hintFont.setPointSize(9);
-        painter->setFont(hintFont);
-        painter->setPen(QColor(226, 232, 240));
-        painter->drawText(QPointF(boxRect.x(), boxRect.bottom() + 16), QStringLiteral("[Enter: Tamamla | Esc: İptal]"));
-
         painter->restore();
     }
+}
 
-    // 8. Desktop Mode Badge
-    if (m_stateMgr->interactionMode() == InteractionMode::DesktopPassthrough) {
-        painter->save();
-        const QString statusText = QStringLiteral("Masaüstü Modu (F9 / Meta+Alt+D)");
-        QFont font = painter->font();
-        font.setPointSize(10);
-        font.setBold(true);
-        painter->setFont(font);
-
-        QFontMetrics fm(font);
-        const int textW = fm.horizontalAdvance(statusText);
-        const int badgeW = textW + 30;
-        const int badgeH = 28;
-        const QRect badgeRect((width() - badgeW) / 2, 10, badgeW, badgeH);
-
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(QColor(15, 23, 42, 210));
-        painter->drawRoundedRect(badgeRect, 14, 14);
-
-        painter->setBrush(QColor(34, 197, 94));
-        painter->drawEllipse(badgeRect.x() + 12, badgeRect.y() + (badgeH - 8) / 2, 8, 8);
-
-        painter->setPen(QColor(241, 245, 249));
-        painter->drawText(badgeRect.adjusted(26, 0, 0, 0), Qt::AlignVCenter | Qt::AlignLeft, statusText);
-        painter->restore();
+void CanvasItem::keyPressEvent(QKeyEvent* ev)
+{
+    if (m_isEditingText) {
+        if (ev->key() == Qt::Key_Return || ev->key() == Qt::Key_Enter) {
+            commitCurrentText();
+            ev->accept();
+            return;
+        } else if (ev->key() == Qt::Key_Escape) {
+            cancelCurrentText();
+            ev->accept();
+            return;
+        } else if (ev->key() == Qt::Key_Backspace) {
+            if (!m_currentEditText.isEmpty()) {
+                m_currentEditText.chop(1);
+                update();
+            }
+            ev->accept();
+            return;
+        } else {
+            const QString text = ev->text();
+            if (!text.isEmpty() && text.at(0).isPrint()) {
+                m_currentEditText.append(text);
+                m_cursorVisible = true;
+                update();
+                ev->accept();
+                return;
+            }
+        }
     }
+
+    QQuickPaintedItem::keyPressEvent(ev);
 }
 
 void CanvasItem::mousePressEvent(QMouseEvent* ev)
@@ -332,36 +318,10 @@ void CanvasItem::mouseMoveEvent(QMouseEvent* ev)
         return;
     }
 
-    if (m_stateMgr->currentTool() == ToolType::Laser && m_laserEngine) {
-        m_laserEngine->addPoint(ev->position(), 1.0);
-        update();
-        ev->accept();
-        return;
-    }
-
     if (m_isDrawing) {
         handleMovePoint(ev->position(), 1.0);
         ev->accept();
     }
-}
-
-void CanvasItem::hoverMoveEvent(QHoverEvent* ev)
-{
-    m_lastMousePos = ev->position();
-
-    if (!m_stateMgr || m_stateMgr->interactionMode() == InteractionMode::DesktopPassthrough) {
-        ev->ignore();
-        return;
-    }
-
-    if (m_stateMgr->currentTool() == ToolType::Laser && m_laserEngine) {
-        m_laserEngine->addPoint(ev->position(), 1.0);
-        update();
-        ev->accept();
-        return;
-    }
-
-    ev->ignore();
 }
 
 void CanvasItem::mouseReleaseEvent(QMouseEvent* ev)
@@ -403,10 +363,7 @@ void CanvasItem::handleStartPoint(const QPointF& pos, qreal pressure, qreal tilt
     m_activePoints.clear();
     m_activePoints.push_back(StrokePoint(pos, pressure, tiltX, tiltY));
 
-    if (tool == ToolType::Laser && m_laserEngine) {
-        m_laserEngine->addPoint(pos, pressure);
-        update();
-    } else if (tool == ToolType::Eraser) {
+    if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::Pen || tool == ToolType::Highlighter || tool == ToolType::GhostPen) {
         m_activePreviewPath = Smoother::buildSmoothPath(m_activePoints);
@@ -420,10 +377,7 @@ void CanvasItem::handleMovePoint(const QPointF& pos, qreal pressure, qreal tiltX
     m_activePoints.push_back(StrokePoint(pos, pressure, tiltX, tiltY));
 
     const auto tool = m_stateMgr->currentTool();
-    if (tool == ToolType::Laser && m_laserEngine) {
-        m_laserEngine->addPoint(pos, pressure);
-        update();
-    } else if (tool == ToolType::Eraser) {
+    if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::Pen || tool == ToolType::Highlighter || tool == ToolType::GhostPen) {
         m_activePreviewPath = Smoother::buildSmoothPath(m_activePoints);
@@ -447,10 +401,7 @@ void CanvasItem::handleReleasePoint(const QPointF& pos)
 {
     const auto tool = m_stateMgr->currentTool();
 
-    if (tool == ToolType::Laser && m_laserEngine) {
-        m_laserEngine->addPoint(pos, m_lastPressure);
-        update();
-    } else if (tool == ToolType::Eraser) {
+    if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::GhostPen && m_activePoints.size() >= 1) {
         Stroke s;
@@ -488,8 +439,6 @@ void CanvasItem::handleReleasePoint(const QPointF& pos)
         }
 
         s.cachedBoundingRect = s.cachedPath.boundingRect().adjusted(-s.baseWidth, -s.baseWidth, s.baseWidth, s.baseWidth);
-        s.isDirty = false;
-
         m_document->addStroke(s);
     }
 
@@ -502,49 +451,29 @@ void CanvasItem::handleReleasePoint(const QPointF& pos)
 void CanvasItem::performVectorErase(const QPointF& pos, qreal radius)
 {
     if (!m_document) return;
-    QVector<QUuid> toErase;
-    for (const auto& stroke : m_document->strokes()) {
-        if (Smoother::strokeIntersects(stroke, pos, radius)) {
-            toErase.push_back(stroke.id);
+
+    QRectF eraseRect(pos.x() - radius, pos.y() - radius, radius * 2, radius * 2);
+    const auto& strokes = m_document->strokes();
+    QVector<QUuid> toRemove;
+
+    for (const auto& s : strokes) {
+        if (s.cachedBoundingRect.intersects(eraseRect)) {
+            toRemove.push_back(s.id);
         }
     }
 
-    if (!toErase.isEmpty()) {
-        m_document->removeStrokes(toErase);
-    }
-}
-
-void CanvasItem::keyPressEvent(QKeyEvent* ev)
-{
-    if (m_isEditingText) {
-        if (ev->key() == Qt::Key_Return || ev->key() == Qt::Key_Enter) {
-            commitCurrentText();
-            ev->accept();
-            return;
-        } else if (ev->key() == Qt::Key_Escape) {
-            cancelCurrentText();
-            ev->accept();
-            return;
-        } else if (ev->key() == Qt::Key_Backspace) {
-            if (!m_currentEditText.isEmpty()) {
-                m_currentEditText.chop(1);
-                update();
-            }
-            ev->accept();
-            return;
-        } else if (!ev->text().isEmpty()) {
-            const QString txt = ev->text();
-            if (txt[0].isPrint()) {
-                m_currentEditText += txt;
-                m_cursorVisible = true;
-                update();
-            }
-            ev->accept();
-            return;
-        }
+    for (const auto& id : toRemove) {
+        m_document->removeStrokeById(id);
     }
 
-    QQuickPaintedItem::keyPressEvent(ev);
+    m_ghostStrokes.erase(
+        std::remove_if(m_ghostStrokes.begin(), m_ghostStrokes.end(), [&](const Stroke& s) {
+            return s.cachedBoundingRect.intersects(eraseRect);
+        }),
+        m_ghostStrokes.end()
+    );
+
+    update();
 }
 
 } // namespace DrawOnScreen

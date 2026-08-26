@@ -14,7 +14,6 @@ namespace DrawOnScreen {
 enum class ToolType {
     Pen = 0,
     Highlighter,
-    Laser,
     GhostPen,
     Eraser,
     Line,

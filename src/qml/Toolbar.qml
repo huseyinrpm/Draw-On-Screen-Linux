@@ -208,9 +208,9 @@ Item {
                 IconButton {
                     iconName: "ghost"
                     tooltipText: "Hayalet Kalem (Sönen sunum kalemi)"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 3
+                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 2
                     activeColor: "#c084fc"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(3) }
+                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(2) }
                 }
 
                 // Highlighter
@@ -222,22 +222,13 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(1) }
                 }
 
-                // Laser
-                IconButton {
-                    iconName: "laser"
-                    tooltipText: "Lazer İşaretçi (144Hz Glow)"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 2
-                    activeColor: "#f43f5e"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(2) }
-                }
-
                 // Eraser
                 IconButton {
                     iconName: "eraser"
                     tooltipText: "Vektörel Silgi"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 4
+                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 3
                     activeColor: "#f87171"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(4) }
+                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(3) }
                 }
 
                 Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
@@ -246,39 +237,39 @@ Item {
                 IconButton {
                     iconName: "line"
                     tooltipText: "Düz Çizgi"
+                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 4
+                    activeColor: "#38bdf8"
+                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(4) }
+                }
+                IconButton {
+                    iconName: "arrow"
+                    tooltipText: "Ok Çizimi"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 5
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(5) }
                 }
                 IconButton {
-                    iconName: "arrow"
-                    tooltipText: "Ok Çizimi"
+                    iconName: "rect"
+                    tooltipText: "Dikdörtgen"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 6
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(6) }
                 }
                 IconButton {
-                    iconName: "rect"
-                    tooltipText: "Dikdörtgen"
+                    iconName: "ellipse"
+                    tooltipText: "Daire / Elips"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 7
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(7) }
-                }
-                IconButton {
-                    iconName: "ellipse"
-                    tooltipText: "Daire / Elips"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 8
-                    activeColor: "#38bdf8"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(8) }
                 }
 
                 // Text
                 IconButton {
                     iconName: "text"
                     tooltipText: "Metin Ekle (Ekranda canlı yaz)"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 9
+                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 8
                     activeColor: "#38bdf8"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(9) }
+                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(8) }
                 }
 
                 Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
@@ -479,13 +470,6 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(0) }
                 }
                 IconButton {
-                    iconName: "ghost"
-                    tooltipText: "Hayalet Kalem (Sönen)"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 3
-                    activeColor: "#c084fc"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(3) }
-                }
-                IconButton {
                     iconName: "highlighter"
                     tooltipText: "Fosforlu Kalem"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 1
@@ -493,18 +477,18 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(1) }
                 }
                 IconButton {
-                    iconName: "laser"
-                    tooltipText: "Lazer İşaretçi"
+                    iconName: "ghost"
+                    tooltipText: "Hayalet Kalem (Sönen)"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 2
-                    activeColor: "#f43f5e"
+                    activeColor: "#c084fc"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(2) }
                 }
                 IconButton {
                     iconName: "eraser"
                     tooltipText: "Vektörel Silgi"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 4
+                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 3
                     activeColor: "#f87171"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(4) }
+                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(3) }
                 }
 
                 Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
@@ -513,37 +497,37 @@ Item {
                 IconButton {
                     iconName: "line"
                     tooltipText: "Düz Çizgi"
+                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 4
+                    activeColor: "#38bdf8"
+                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(4) }
+                }
+                IconButton {
+                    iconName: "arrow"
+                    tooltipText: "Ok Çizimi"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 5
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(5) }
                 }
                 IconButton {
-                    iconName: "arrow"
-                    tooltipText: "Ok Çizimi"
+                    iconName: "rect"
+                    tooltipText: "Dikdörtgen"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 6
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(6) }
                 }
                 IconButton {
-                    iconName: "rect"
-                    tooltipText: "Dikdörtgen"
+                    iconName: "ellipse"
+                    tooltipText: "Daire"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 7
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(7) }
                 }
                 IconButton {
-                    iconName: "ellipse"
-                    tooltipText: "Daire"
+                    iconName: "text"
+                    tooltipText: "Metin Ekle"
                     isActive: toolState.interactionMode === 0 && toolState.currentTool === 8
                     activeColor: "#38bdf8"
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(8) }
-                }
-                IconButton {
-                    iconName: "text"
-                    tooltipText: "Metin Ekle"
-                    isActive: toolState.interactionMode === 0 && toolState.currentTool === 9
-                    activeColor: "#38bdf8"
-                    onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(9) }
                 }
 
                 Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }

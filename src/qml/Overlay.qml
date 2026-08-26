@@ -12,7 +12,6 @@ Item {
         anchors.fill: parent
         document: canvasDoc
         stateManager: toolState
-        laserEngine: laserEngine
         toolbarRect: Qt.rect(toolbarCard.x, toolbarCard.y, toolbarCard.width, toolbarCard.height)
         focus: true
     }

@@ -22,7 +22,6 @@ void ToolStateManager::loadSettings()
     m_currentWidth = settings.value(QStringLiteral("currentWidth"), 4.0).toReal();
     m_isFilled = settings.value(QStringLiteral("isFilled"), false).toBool();
     m_isVerticalLayout = settings.value(QStringLiteral("isVerticalLayout"), false).toBool();
-    m_laserFadeDuration = settings.value(QStringLiteral("laserFadeDuration"), 500).toInt();
     m_ghostDurationMs = settings.value(QStringLiteral("ghostDurationMs"), 3000).toInt();
     m_fontSize = settings.value(QStringLiteral("fontSize"), 28).toInt();
     m_savedToolbarX = settings.value(QStringLiteral("toolbarX"), 80).toInt();
@@ -44,7 +43,6 @@ void ToolStateManager::saveSettings()
     settings.setValue(QStringLiteral("currentWidth"), m_currentWidth);
     settings.setValue(QStringLiteral("isFilled"), m_isFilled);
     settings.setValue(QStringLiteral("isVerticalLayout"), m_isVerticalLayout);
-    settings.setValue(QStringLiteral("laserFadeDuration"), m_laserFadeDuration);
     settings.setValue(QStringLiteral("ghostDurationMs"), m_ghostDurationMs);
     settings.setValue(QStringLiteral("fontSize"), m_fontSize);
     settings.setValue(QStringLiteral("toolbarX"), m_savedToolbarX);
@@ -168,7 +166,6 @@ void ToolStateManager::setCurrentTool(ToolType tool)
     if (m_currentTool != tool) {
         m_currentTool = tool;
         emit currentToolChanged(static_cast<int>(tool));
-        emit isLaserActiveChanged(tool == ToolType::Laser);
         saveSettings();
     }
 }
@@ -274,16 +271,6 @@ void ToolStateManager::setAreDrawingsVisible(bool visible)
     if (m_areDrawingsVisible != visible) {
         m_areDrawingsVisible = visible;
         emit areDrawingsVisibleChanged(visible);
-    }
-}
-
-void ToolStateManager::setLaserFadeDuration(int ms)
-{
-    const int effective = qBound(100, ms, 3000);
-    if (m_laserFadeDuration != effective) {
-        m_laserFadeDuration = effective;
-        emit laserFadeDurationChanged(effective);
-        saveSettings();
     }
 }
 

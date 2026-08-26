@@ -13,13 +13,12 @@ namespace DrawOnScreen {
 
 class ToolStateManager;
 class CanvasDocument;
-class LaserPointerEngine;
 
 class OverlayWindow : public QQuickView {
     Q_OBJECT
 
 public:
-    explicit OverlayWindow(ToolStateManager* stateMgr, CanvasDocument* doc, LaserPointerEngine* laserEngine, QWindow* parent = nullptr);
+    explicit OverlayWindow(ToolStateManager* stateMgr, CanvasDocument* doc, QWindow* parent = nullptr);
     ~OverlayWindow() override;
 
     void updateScreenGeometry();
@@ -36,7 +35,6 @@ protected:
 private:
     ToolStateManager* m_stateMgr = nullptr;
     CanvasDocument* m_document = nullptr;
-    LaserPointerEngine* m_laserEngine = nullptr;
     LayerShellQt::Window* m_layerWindow = nullptr;
     QRect m_toolbarRect = QRect(80, 80, 680, 54);
 };

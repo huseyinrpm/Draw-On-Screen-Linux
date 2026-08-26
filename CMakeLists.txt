@@ -31,8 +31,6 @@ set(SOURCES
     src/core/smoother.cpp
     src/core/document.h
     src/core/document.cpp
-    src/core/laserengine.h
-    src/core/laserengine.cpp
     src/core/toolstatemanager.h
     src/core/toolstatemanager.cpp
     src/ui/canvaswindow.h
@@ -79,7 +77,6 @@ add_executable(test_core
     tests/test_core.cpp
     src/core/smoother.cpp
     src/core/document.cpp
-    src/core/laserengine.cpp
     src/core/toolstatemanager.cpp
 )
 target_include_directories(test_core PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

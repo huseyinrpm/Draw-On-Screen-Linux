@@ -39,9 +39,6 @@ Doğrudan Wayland **`zwlr_layer_shell_v1`** protokolü ve **Qt6 Quick / C++20** 
 - 👻 **Hayalet Kalem (Ghost Pen / Otomatik Sönen Sunum Kalemi):**
   Öğretmenler ve sunum yapanlar için ideal: Çizilen vurgular veya oklar ekranda kalıcı olmaz; yumuşak bir fade animasyonuyla kendiliğinden kaybolur.
 
-- ⚡ **144Hz Glow Lazer İşaretçi (Laser Pointer):**
-  Adaptif kuyruk algoritması ile fare hareketlerinizi takip eden neon lazer izi oluşturur.
-
 - ⬜ **Beyaz Tahta & Kara Tahta Modu:**
   Ders ve toplantılarda tek tıkla **Şeffaf Ekran 🖥️ -> Beyaz Tahta ⬜ -> Kara Tahta ⬛** arasında geçiş yapabilirsiniz.
 
@@ -52,7 +49,7 @@ Doğrudan Wayland **`zwlr_layer_shell_v1`** protokolü ve **Qt6 Quick / C++20** 
   Düz çizgi, dinamik oklu çizgi, dikdörtgen ve daire/elips araçları. İsteğe bağlı **Dolgulu Şekil (Fill)** modu.
 
 - 🎨 **360° Renk Çarkı ve Gelişmiş Ayarlar Çekmecesi:**
-  Kromatik renk çemberinden dilediğiniz rengi seçebilir, fırça kalınlığını, lazer süresini ve yazı boyutunu hassas ayarlayabilirsiniz.
+  Kromatik renk çemberinden dilediğiniz rengi seçebilir, fırça kalınlığını, hayalet kalem süresini ve yazı boyutunu hassas ayarlayabilirsiniz.
 
 - 🔄 **Yatay & Dikey Menü Düzeni:**
   Tek tıkla menüyü yatay veya ekranın yan kenarları için dikey sütun görünümüne döndürebilirsiniz.
@@ -179,7 +176,6 @@ DrawOnScreen/
 │   │   ├── types.h             # Temel veri yapıları (Stroke, ToolType, InteractionMode)
 │   │   ├── document.h/.cpp     # Vektörel çizim belgesi, geri/ileri al motoru
 │   │   ├── smoother.h/.cpp     # Catmull-Rom Bézier eğri yumuşatma algoritması
-│   │   ├── laserengine.h/.cpp  # 144Hz adaptif neon lazer motoru
 │   │   └── toolstatemanager.h/.cpp # Araç durumları, kalıcı QSettings yönetimi
 │   ├── ui/
 │   │   ├── canvasitem.h/.cpp   # QQuickPaintedItem donanım hızlandırmalı çizim motoru
