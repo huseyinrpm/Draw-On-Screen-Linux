@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="qml/Overlay.qml">../src/qml/Overlay.qml</file>
+        <file alias="qml/Toolbar.qml">../src/qml/Toolbar.qml</file>
+        <file alias="qml/IconButton.qml">../src/qml/IconButton.qml</file>
+        <file alias="qml/ColorPalette.qml">../src/qml/ColorPalette.qml</file>
+        <file alias="qml/SizeSlider.qml">../src/qml/SizeSlider.qml</file>
+        <file alias="qml/ColorWheelPopup.qml">../src/qml/ColorWheelPopup.qml</file>
+        <file alias="qml/SettingsDrawer.qml">../src/qml/SettingsDrawer.qml</file>
+        <file alias="resources/icons/drawonscreen.svg">icons/drawonscreen.svg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Border Glow Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <!-- Neon Stroke Gradient -->
+    <linearGradient id="strokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="35%" stop-color="#818cf8"/>
+      <stop offset="70%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+
+    <!-- Stylus Body Gradient -->
+    <linearGradient id="penBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="50%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+
+    <!-- Stylus Grip Gradient -->
+    <linearGradient id="penGripGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur1"/>
+      <feGaussianBlur stdDeviation="24" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Main Squircle Card with Shadow -->
+  <rect x="32" y="32" width="448" height="448" rx="108" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="4" filter="url(#softShadow)"/>
+
+  <!-- Screen Grid / Dots Pattern -->
+  <g opacity="0.15">
+    <circle cx="128" cy="128" r="4" fill="#38bdf8"/>
+    <circle cx="256" cy="128" r="4" fill="#38bdf8"/>
+    <circle cx="384" cy="128" r="4" fill="#38bdf8"/>
+    <circle cx="128" cy="256" r="4" fill="#38bdf8"/>
+    <circle cx="256" cy="256" r="4" fill="#38bdf8"/>
+    <circle cx="384" cy="256" r="4" fill="#38bdf8"/>
+    <circle cx="128" cy="384" r="4" fill="#38bdf8"/>
+    <circle cx="256" cy="384" r="4" fill="#38bdf8"/>
+    <circle cx="384" cy="384" r="4" fill="#38bdf8"/>
+  </g>
+
+  <!-- Smooth Neon Annotation Ribbon Curve -->
+  <path d="M 96 360 C 140 180, 240 420, 360 210 C 400 140, 430 180, 410 240 C 380 320, 290 380, 180 340" 
+        fill="none" 
+        stroke="url(#strokeGrad)" 
+        stroke-width="26" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#neonGlow)"/>
+
+  <!-- Core Bright Stroke Line -->
+  <path d="M 96 360 C 140 180, 240 420, 360 210 C 400 140, 430 180, 410 240 C 380 320, 290 380, 180 340" 
+        fill="none" 
+        stroke="#ffffff" 
+        stroke-width="8" 
+        stroke-linecap="round" 
+        opacity="0.85"/>
+
+  <!-- Laser Sparkles at Start and End -->
+  <circle cx="96" cy="360" r="14" fill="#38bdf8" filter="url(#neonGlow)"/>
+  <circle cx="96" cy="360" r="6" fill="#ffffff"/>
+
+  <!-- Futuristic Stylus Pen (Floating & Drawing) -->
+  <g transform="translate(330, 70) rotate(42)" filter="url(#softShadow)">
+    <!-- Pen Shaft -->
+    <path d="M 12 0 L 36 0 L 36 210 L 24 250 L 12 210 Z" fill="url(#penBodyGrad)"/>
+    
+    <!-- Pen Accent Ring -->
+    <rect x="12" y="140" width="24" height="40" rx="4" fill="url(#penGripGrad)"/>
+    <rect x="18" y="150" width="12" height="20" rx="3" fill="#ffffff" opacity="0.6"/>
+
+    <!-- Glowing Tip -->
+    <polygon points="18,230 30,230 24,256" fill="#38bdf8" filter="url(#neonGlow)"/>
+    <polygon points="21,245 27,245 24,258" fill="#ffffff"/>
+  </g>
+</svg>

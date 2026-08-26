@@ -1,0 +1,30 @@
+# Build directories
+build/
+bin/
+lib/
+out/
+
+# CMake temporary files
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.ninja
+.ninja_*
+
+# Qt / IDE files
+*.autosave
+.qmake.stash
+.vscode/
+.idea/
+*.swp
+*~
+
+# Antigravity artifacts
+.gemini/
+.agents/
+
+# System files
+.DS_Store
+*.orig

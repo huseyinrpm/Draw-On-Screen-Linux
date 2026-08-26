@@ -1,0 +1,34 @@
+# Maintainer: Huseyin <huseyin@local>
+pkgname=drawonscreen
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Native, low-latency, tablet-supported screen drawing & annotation tool for KDE Plasma 6 (KWin Wayland)"
+arch=('x86_64')
+url="https://github.com/huseyin/DrawOnScreen"
+license=('GPL-3.0-or-later')
+depends=(
+    'qt6-base'
+    'qt6-declarative'
+    'qt6-wayland'
+    'layer-shell-qt'
+    'kglobalaccel'
+)
+makedepends=(
+    'cmake'
+    'ninja'
+    'gcc'
+)
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cmake -B build -S "$srcdir/$pkgname-$pkgver" \
+        -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr
+    cmake --build build
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}

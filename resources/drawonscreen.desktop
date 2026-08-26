@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=DrawOnScreen
+GenericName=Ekran Çizim Aracı
+Comment=Linux Wayland için gelişmiş ekran üzerine çizim ve sunum aracı
+Exec=drawonscreen
+TryExec=drawonscreen
+Icon=drawonscreen
+Terminal=false
+Type=Application
+Categories=Utility;Graphics;KDE;Qt;
+StartupNotify=true
+StartupWMClass=drawonscreen
+X-KDE-GlobalShortcuts=true
+Keywords=draw;screen;annotation;pen;tahta;cizim;epicpen;
