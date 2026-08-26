@@ -21,6 +21,7 @@ class ToolStateManager : public QObject {
     Q_PROPERTY(bool isToolbarVisible READ isToolbarVisible WRITE setIsToolbarVisible NOTIFY isToolbarVisibleChanged)
     Q_PROPERTY(bool isVerticalLayout READ isVerticalLayout WRITE setIsVerticalLayout NOTIFY isVerticalLayoutChanged)
     Q_PROPERTY(bool areDrawingsVisible READ areDrawingsVisible WRITE setAreDrawingsVisible NOTIFY areDrawingsVisibleChanged)
+    Q_PROPERTY(qreal uiScale READ uiScale WRITE setUiScale NOTIFY uiScaleChanged)
     Q_PROPERTY(int ghostDurationMs READ ghostDurationMs WRITE setGhostDurationMs NOTIFY ghostDurationMsChanged)
     Q_PROPERTY(int savedToolbarX READ savedToolbarX WRITE setSavedToolbarX NOTIFY savedToolbarXChanged)
     Q_PROPERTY(int savedToolbarY READ savedToolbarY WRITE setSavedToolbarY NOTIFY savedToolbarYChanged)
@@ -80,6 +81,9 @@ public:
     bool areDrawingsVisible() const { return m_areDrawingsVisible; }
     void setAreDrawingsVisible(bool visible);
 
+    qreal uiScale() const { return m_uiScale; }
+    void setUiScale(qreal scale);
+
     int ghostDurationMs() const { return m_ghostDurationMs; }
     void setGhostDurationMs(int ms);
 
@@ -124,6 +128,7 @@ public:
     Q_INVOKABLE void selectTool(int tool) { setCurrentToolInt(tool); }
     Q_INVOKABLE void selectColor(const QColor& color);
     Q_INVOKABLE void selectWidth(qreal width) { setCurrentWidth(width); }
+    Q_INVOKABLE void setScale(qreal scale) { setUiScale(scale); }
     Q_INVOKABLE void toggleInteractionMode();
     Q_INVOKABLE void setInteractionModeEnum(int mode) { setInteractionModeInt(mode); }
     Q_INVOKABLE void toggleOrientation();
@@ -156,6 +161,7 @@ signals:
     void isToolbarVisibleChanged(bool visible);
     void isVerticalLayoutChanged(bool vertical);
     void areDrawingsVisibleChanged(bool visible);
+    void uiScaleChanged(qreal scale);
     void ghostDurationMsChanged(int ms);
     void savedToolbarXChanged(int x);
     void savedToolbarYChanged(int y);
@@ -190,6 +196,7 @@ private:
     bool m_isToolbarVisible = true;
     bool m_isVerticalLayout = false;
     bool m_areDrawingsVisible = true;
+    qreal m_uiScale = 1.0;
     int m_ghostDurationMs = 3000;
     int m_savedToolbarX = 80;
     int m_savedToolbarY = 80;

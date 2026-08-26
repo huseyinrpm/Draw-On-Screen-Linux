@@ -141,6 +141,9 @@ void testToolStateManager()
     state.toggleOrientation();
     assert(state.isVerticalLayout());
 
+    state.setUiScale(1.25);
+    assert(std::abs(state.uiScale() - 1.25) < 0.001);
+
     state.setShortcutToggleMode(QStringLiteral("F10"));
     assert(state.shortcutToggleMode() == QStringLiteral("F10"));
 

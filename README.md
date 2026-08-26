@@ -51,6 +51,9 @@ Doğrudan Wayland **`zwlr_layer_shell_v1`** protokolü ve **Qt6 Quick / C++20** 
 - 🎨 **360° Renk Çarkı ve Gelişmiş Ayarlar Çekmecesi:**
   Kromatik renk çemberinden dilediğiniz rengi seçebilir, fırça kalınlığını, hayalet kalem süresini ve yazı boyutunu hassas ayarlayabilirsiniz.
 
+- 🔍 **Dinamik Menü & Buton Ölçeklendirme (UI Scale %75 - %160):**
+  İster dizüstü bilgisayarda kompakt (%80), ister 4K monitörde (%125), ister akıllı tahtada kolay dokunma için büyük boyutta (%150) menü ve ikon boyutlarını canlı olarak ayarlayabilirsiniz.
+
 - 🔄 **Yatay & Dikey Menü Düzeni:**
   Tek tıkla menüyü yatay veya ekranın yan kenarları için dikey sütun görünümüne döndürebilirsiniz.
 

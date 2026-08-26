@@ -14,13 +14,15 @@ Item {
 
     signal clicked()
 
-    width: 36
-    height: 36
+    property real uiScale: toolState ? toolState.uiScale : 1.0
+
+    width: Math.round(36 * uiScale)
+    height: Math.round(36 * uiScale)
 
     Rectangle {
         id: bg
         anchors.fill: parent
-        radius: 10
+        radius: Math.round(10 * uiScale)
         color: {
             if (root.isDisabled) return "transparent"
             if (root.isActive) return Qt.rgba(56/255, 189/255, 248/255, 0.24)
@@ -42,10 +44,10 @@ Item {
         // Glow indicator for active state
         Rectangle {
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 2
+            anchors.bottomMargin: Math.max(1, Math.round(2 * root.uiScale))
             anchors.horizontalCenter: parent.horizontalCenter
-            width: root.isActive ? 14 : 0
-            height: 2
+            width: root.isActive ? Math.round(14 * root.uiScale) : 0
+            height: Math.max(1, Math.round(2 * root.uiScale))
             radius: 1
             color: root.activeColor
             visible: root.isActive
@@ -58,9 +60,9 @@ Item {
             id: colorSwatch
             visible: root.isCustomColorBadge
             anchors.centerIn: parent
-            width: 20
-            height: 20
-            radius: 10
+            width: Math.round(20 * root.uiScale)
+            height: Math.round(20 * root.uiScale)
+            radius: Math.round(10 * root.uiScale)
             color: root.customColor
             border.color: "#ffffff"
             border.width: 1.5
@@ -71,7 +73,7 @@ Item {
             id: iconCanvas
             visible: !root.isCustomColorBadge
             anchors.fill: parent
-            anchors.margins: 8
+            anchors.margins: Math.round(8 * root.uiScale)
             renderTarget: Canvas.FramebufferObject
 
             property color iconColor: {
@@ -81,7 +83,8 @@ Item {
                 return "#cbd5e1"
             }
 
-            onIconColorChanged: requestPaint()
+            property real scaleFactor: root.uiScale
+            onScaleFactorChanged: requestPaint()
 
             onPaint: {
                 var ctx = getContext("2d");
@@ -91,7 +94,7 @@ Item {
 
                 ctx.strokeStyle = iconColor;
                 ctx.fillStyle = iconColor;
-                ctx.lineWidth = 1.8;
+                ctx.lineWidth = Math.max(1.2, 1.8 * root.uiScale);
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
 

@@ -3,20 +3,22 @@ import QtQuick.Controls
 
 Item {
     id: root
-    width: 140
-    height: 38
+    property real uiScale: toolState ? toolState.uiScale : 1.0
+
+    width: Math.round(140 * uiScale)
+    height: Math.round(38 * uiScale)
 
     Row {
         anchors.fill: parent
-        spacing: 8
+        spacing: Math.round(8 * root.uiScale)
         anchors.verticalCenter: parent.verticalCenter
 
         // Live preview circle
         Rectangle {
             id: previewCircle
-            width: 24
-            height: 24
-            radius: 12
+            width: Math.round(24 * root.uiScale)
+            height: Math.round(24 * root.uiScale)
+            radius: width / 2
             color: "transparent"
             border.color: Qt.rgba(255, 255, 255, 0.2)
             border.width: 1
@@ -39,7 +41,7 @@ Item {
             stepSize: 1
             value: toolState.currentWidth
             anchors.verticalCenter: parent.verticalCenter
-            width: 100
+            width: Math.round(100 * root.uiScale)
 
             onMoved: {
                 toolState.selectWidth(value)

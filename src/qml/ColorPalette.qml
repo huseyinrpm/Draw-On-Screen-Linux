@@ -5,6 +5,7 @@ Item {
     id: root
 
     property bool isVertical: toolState.isVerticalLayout
+    property real uiScale: toolState ? toolState.uiScale : 1.0
 
     implicitWidth: colorGrid.width
     implicitHeight: colorGrid.height
@@ -26,16 +27,16 @@ Item {
         id: colorGrid
         columns: root.isVertical ? 2 : 10
         rows: root.isVertical ? 5 : 1
-        spacing: 5
+        spacing: Math.round(5 * root.uiScale)
         anchors.centerIn: parent
 
         Repeater {
             model: root.colors
             delegate: Rectangle {
                 id: colorItem
-                width: 18
-                height: 18
-                radius: 9
+                width: Math.round(18 * root.uiScale)
+                height: Math.round(18 * root.uiScale)
+                radius: Math.round(9 * root.uiScale)
                 color: modelData
 
                 property bool isSelected: toolState.currentColor.toString().toLowerCase() === modelData.toLowerCase()
@@ -49,9 +50,9 @@ Item {
                 Rectangle {
                     visible: colorItem.isSelected
                     anchors.centerIn: parent
-                    width: 5
-                    height: 5
-                    radius: 2.5
+                    width: Math.max(3, Math.round(5 * root.uiScale))
+                    height: Math.max(3, Math.round(5 * root.uiScale))
+                    radius: width / 2
                     color: modelData === "#ffffff" ? "#0f172a" : "#ffffff"
                 }
 

@@ -5,14 +5,15 @@ Item {
     id: root
 
     property bool isOpened: false
-    property int currentTab: 0 // 0: Renk & Fırça, 1: Lazer & Efekt, 2: Kısayollar & Genel
+    property int currentTab: 0 // 0: Renk & Fırça, 1: Ölçek & Efekt, 2: Kısayollar & Genel
+    property real uiScale: toolState ? toolState.uiScale : 1.0
 
     property real currentHue: 0.0
     property real currentSat: 1.0
     property real currentVal: 1.0
 
-    width: 330
-    height: isOpened ? 410 : 0
+    width: Math.round(340 * uiScale)
+    height: isOpened ? Math.round(450 * uiScale) : 0
     visible: isOpened
     clip: true
 
@@ -26,15 +27,15 @@ Item {
     Rectangle {
         id: panelCard
         anchors.fill: parent
-        radius: 18
+        radius: Math.round(18 * root.uiScale)
         color: Qt.rgba(15/255, 23/255, 42/255, 0.98)
         border.color: Qt.rgba(255, 255, 255, 0.18)
         border.width: 1
 
         Column {
             anchors.fill: parent
-            anchors.margins: 12
-            spacing: 10
+            anchors.margins: Math.round(12 * root.uiScale)
+            spacing: Math.round(10 * root.uiScale)
 
             // 1. Header Bar
             Row {
@@ -43,8 +44,8 @@ Item {
 
                 Image {
                     source: "qrc:/resources/icons/drawonscreen.svg"
-                    width: 20
-                    height: 20
+                    width: Math.round(20 * root.uiScale)
+                    height: Math.round(20 * root.uiScale)
                     sourceSize.width: 40
                     sourceSize.height: 40
                     anchors.verticalCenter: parent.verticalCenter
@@ -53,7 +54,7 @@ Item {
 
                 Text {
                     text: "DrawOnScreen Ayarları"
-                    font.pixelSize: 12
+                    font.pixelSize: Math.round(12 * root.uiScale)
                     font.bold: true
                     color: "#f8fafc"
                     anchors.verticalCenter: parent.verticalCenter
@@ -61,8 +62,8 @@ Item {
                 Item { width: 105 }
                 IconButton {
                     iconName: "close"
-                    width: 24
-                    height: 24
+                    width: Math.round(24 * root.uiScale)
+                    height: Math.round(24 * root.uiScale)
                     tooltipText: "Kapat"
                     onClicked: root.isOpened = false
                 }
@@ -71,8 +72,8 @@ Item {
             // 2. Tab Selector
             Rectangle {
                 width: parent.width
-                height: 30
-                radius: 8
+                height: Math.round(30 * root.uiScale)
+                radius: Math.round(8 * root.uiScale)
                 color: Qt.rgba(255, 255, 255, 0.06)
 
                 Row {
@@ -81,9 +82,9 @@ Item {
 
                     // Tab 0: Renk & Fırça
                     Rectangle {
-                        width: 96
-                        height: 24
-                        radius: 6
+                        width: Math.round(96 * root.uiScale)
+                        height: Math.round(24 * root.uiScale)
+                        radius: Math.round(6 * root.uiScale)
                         color: root.currentTab === 0 ? Qt.rgba(56/255, 189/255, 248/255, 0.25) : "transparent"
                         border.color: root.currentTab === 0 ? "#38bdf8" : "transparent"
                         border.width: 1
@@ -91,7 +92,7 @@ Item {
                         Text {
                             anchors.centerIn: parent
                             text: "🎨 Renk & Fırça"
-                            font.pixelSize: 10
+                            font.pixelSize: Math.round(10 * root.uiScale)
                             font.bold: root.currentTab === 0
                             color: root.currentTab === 0 ? "#38bdf8" : "#94a3b8"
                         }
@@ -102,19 +103,19 @@ Item {
                         }
                     }
 
-                    // Tab 1: Efekt & Yazı
+                    // Tab 1: Ölçek & Efekt
                     Rectangle {
-                        width: 100
-                        height: 24
-                        radius: 6
+                        width: Math.round(100 * root.uiScale)
+                        height: Math.round(24 * root.uiScale)
+                        radius: Math.round(6 * root.uiScale)
                         color: root.currentTab === 1 ? Qt.rgba(56/255, 189/255, 248/255, 0.25) : "transparent"
                         border.color: root.currentTab === 1 ? "#38bdf8" : "transparent"
                         border.width: 1
 
                         Text {
                             anchors.centerIn: parent
-                            text: "👻 Efekt & Yazı"
-                            font.pixelSize: 10
+                            text: "🔍 Ölçek & Efekt"
+                            font.pixelSize: Math.round(10 * root.uiScale)
                             font.bold: root.currentTab === 1
                             color: root.currentTab === 1 ? "#38bdf8" : "#94a3b8"
                         }
@@ -127,9 +128,9 @@ Item {
 
                     // Tab 2: Kısayollar
                     Rectangle {
-                        width: 96
-                        height: 24
-                        radius: 6
+                        width: Math.round(96 * root.uiScale)
+                        height: Math.round(24 * root.uiScale)
+                        radius: Math.round(6 * root.uiScale)
                         color: root.currentTab === 2 ? Qt.rgba(56/255, 189/255, 248/255, 0.25) : "transparent"
                         border.color: root.currentTab === 2 ? "#38bdf8" : "transparent"
                         border.width: 1
@@ -137,7 +138,7 @@ Item {
                         Text {
                             anchors.centerIn: parent
                             text: "⌨️ Kısayollar"
-                            font.pixelSize: 10
+                            font.pixelSize: Math.round(10 * root.uiScale)
                             font.bold: root.currentTab === 2
                             color: root.currentTab === 2 ? "#38bdf8" : "#94a3b8"
                         }
@@ -150,142 +151,114 @@ Item {
                 }
             }
 
+            // 3. Tab Contents
             // ==================== TAB 0: RENK & FIRÇA ====================
             Column {
                 visible: root.currentTab === 0
                 width: parent.width
-                spacing: 10
+                spacing: 8
 
-                Row {
-                    spacing: 12
+                // HSV Color Picker Wheel
+                Rectangle {
+                    width: 180
+                    height: 180
+                    radius: 90
                     anchors.horizontalCenter: parent.horizontalCenter
+                    color: "transparent"
 
-                    // Chromatic Wheel Canvas
-                    Item {
-                        width: 120
-                        height: 120
-                        Canvas {
-                            id: wheelCanvas
-                            anchors.fill: parent
-                            renderTarget: Canvas.FramebufferObject
+                    Canvas {
+                        id: hsvCanvas
+                        anchors.fill: parent
+                        renderTarget: Canvas.FramebufferObject
 
-                            onPaint: {
-                                var ctx = getContext("2d");
-                                ctx.reset();
-                                var cx = width / 2;
-                                var cy = height / 2;
-                                var radius = width / 2 - 2;
+                        onPaint: {
+                            var ctx = getContext("2d");
+                            ctx.reset();
+                            var cx = width / 2;
+                            var cy = height / 2;
+                            var radius = width / 2;
 
-                                for (var angle = 0; angle < 360; angle += 2) {
-                                    var startAngle = (angle - 1) * Math.PI / 180;
-                                    var endAngle = (angle + 2) * Math.PI / 180;
-                                    ctx.beginPath();
-                                    ctx.moveTo(cx, cy);
-                                    ctx.arc(cx, cy, radius, startAngle, endAngle);
-                                    ctx.closePath();
+                            for (var angle = 0; angle < 360; angle += 1) {
+                                var rad = angle * Math.PI / 180;
+                                ctx.beginPath();
+                                ctx.moveTo(cx, cy);
+                                ctx.arc(cx, cy, radius, rad, rad + (Math.PI / 180) * 1.5);
+                                ctx.closePath();
 
-                                    var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-                                    grad.addColorStop(0, "rgba(255, 255, 255, 1)");
-                                    grad.addColorStop(1, "hsl(" + angle + ", 100%, 50%)");
-                                    ctx.fillStyle = grad;
-                                    ctx.fill();
-                                }
+                                var col = Qt.hsva(angle / 360.0, 1.0, 1.0, 1.0);
+                                var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+                                grad.addColorStop(0, "#ffffff");
+                                grad.addColorStop(1, col);
+                                ctx.fillStyle = grad;
+                                ctx.fill();
                             }
-                        }
-
-                        // Selector Dot
-                        Rectangle {
-                            width: 10
-                            height: 10
-                            radius: 5
-                            border.color: "#ffffff"
-                            border.width: 1.5
-                            color: toolState.currentColor
-
-                            x: {
-                                var cx = parent.width / 2;
-                                var r = (parent.width / 2 - 4) * root.currentSat;
-                                var rad = root.currentHue * Math.PI / 180;
-                                return cx + r * Math.cos(rad) - width / 2;
-                            }
-                            y: {
-                                var cy = parent.height / 2;
-                                var r = (parent.height / 2 - 4) * root.currentSat;
-                                var rad = root.currentHue * Math.PI / 180;
-                                return cy + r * Math.sin(rad) - height / 2;
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.CrossCursor
-
-                            function pickAt(mx, my) {
-                                var cx = width / 2;
-                                var cy = height / 2;
-                                var dx = mx - cx;
-                                var dy = my - cy;
-                                var dist = Math.sqrt(dx * dx + dy * dy);
-                                var maxR = width / 2 - 4;
-
-                                var angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                                if (angle < 0) angle += 360;
-
-                                root.currentHue = angle;
-                                root.currentSat = Math.max(0.0, Math.min(1.0, dist / maxR));
-                                root.updateColorFromHSV();
-                            }
-
-                            onPressed: (mouse) => pickAt(mouse.x, mouse.y)
-                            onPositionChanged: (mouse) => pickAt(mouse.x, mouse.y)
                         }
                     }
 
-                    // Brightness & Info
-                    Column {
-                        spacing: 6
-                        anchors.verticalCenter: parent.verticalCenter
+                    // Touch Indicator
+                    Rectangle {
+                        id: hsvThumb
+                        width: 16
+                        height: 16
+                        radius: 8
+                        color: toolState.currentColor
+                        border.color: "#ffffff"
+                        border.width: 2
+                        x: 90 - 8
+                        y: 90 - 8
 
-                        Row {
-                            spacing: 6
-                            Rectangle {
-                                width: 20
-                                height: 20
-                                radius: 10
-                                color: toolState.currentColor
-                                border.color: "#ffffff"
-                                border.width: 1.5
-                            }
-                            Text {
-                                text: toolState.currentColor.toString().toUpperCase()
-                                font.pixelSize: 11
-                                font.bold: true
-                                color: "#f8fafc"
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
+                        Behavior on x { NumberAnimation { duration: 60 } }
+                        Behavior on y { NumberAnimation { duration: 60 } }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.CrossCursor
+
+                        function updateFromPos(mouse) {
+                            var cx = width / 2;
+                            var cy = height / 2;
+                            var dx = mouse.x - cx;
+                            var dy = mouse.y - cy;
+                            var dist = Math.min(width / 2, Math.sqrt(dx * dx + dy * dy));
+                            var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                            if (angle < 0) angle += 360;
+
+                            root.currentHue = angle;
+                            root.currentSat = dist / (width / 2);
+                            root.updateColorFromHSV();
+
+                            hsvThumb.x = cx + Math.cos(angle * Math.PI / 180) * dist - 8;
+                            hsvThumb.y = cy + Math.sin(angle * Math.PI / 180) * dist - 8;
                         }
 
-                        Text { text: "Parlaklık:"; font.pixelSize: 10; color: "#94a3b8" }
-                        Slider {
-                            from: 0.1
-                            to: 1.0
-                            value: root.currentVal
-                            width: 120
-                            onMoved: { root.currentVal = value; root.updateColorFromHSV() }
-                        }
-
-                        Text { text: "Fırça Kalınlığı (" + Math.round(toolState.currentWidth) + "px):"; font.pixelSize: 10; color: "#94a3b8" }
-                        Slider {
-                            from: 1
-                            to: 40
-                            value: toolState.currentWidth
-                            width: 120
-                            onMoved: toolState.selectWidth(value)
+                        onPressed: (mouse) => updateFromPos(mouse)
+                        onPositionChanged: (mouse) => {
+                            if (mouse.buttons & Qt.LeftButton) updateFromPos(mouse);
                         }
                     }
                 }
 
-                // Fill Shapes Toggle
+                // Brightness / Value Slider
+                Column {
+                    width: parent.width
+                    spacing: 2
+                    Text { text: "💡 Renk Parlaklığı:"; font.pixelSize: 11; font.bold: true; color: "#f8fafc" }
+                    Slider {
+                        id: valSlider
+                        width: parent.width
+                        from: 0.1
+                        to: 1.0
+                        stepSize: 0.05
+                        value: 1.0
+                        onMoved: {
+                            root.currentVal = value;
+                            root.updateColorFromHSV();
+                        }
+                    }
+                }
+
+                // Fill toggle
                 Row {
                     width: parent.width
                     spacing: 8
@@ -304,11 +277,76 @@ Item {
                 }
             }
 
-            // ==================== TAB 1: EFEKTLER & YAZI ====================
+            // ==================== TAB 1: ÖLÇEK & EFEKT ====================
             Column {
                 visible: root.currentTab === 1
                 width: parent.width
                 spacing: 12
+
+                // UI Scaling Control (Menü ve Buton Büyüklüğü)
+                Column {
+                    width: parent.width
+                    spacing: 4
+
+                    Row {
+                        width: parent.width
+                        Text { text: "🔍 Menü & Buton Ölçeği (UI Scale):"; font.pixelSize: 11; font.bold: true; color: "#f8fafc" }
+                        Item { width: 10 }
+                        Text {
+                            text: "%" + Math.round(toolState.uiScale * 100)
+                            font.pixelSize: 11
+                            font.bold: true
+                            color: "#38bdf8"
+                        }
+                    }
+
+                    Slider {
+                        id: uiScaleSlider
+                        width: parent.width
+                        from: 0.75
+                        to: 1.60
+                        stepSize: 0.05
+                        value: toolState.uiScale
+                        onMoved: toolState.setScale(value)
+                    }
+
+                    // Presets
+                    Row {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: 6
+
+                        Repeater {
+                            model: [
+                                { label: "%80", scale: 0.80 },
+                                { label: "%100", scale: 1.0 },
+                                { label: "%125", scale: 1.25 },
+                                { label: "%150 (Tahta)", scale: 1.50 }
+                            ]
+                            delegate: Rectangle {
+                                width: Math.round(62 * (root.uiScale > 1.2 ? 1.1 : 1.0))
+                                height: 22
+                                radius: 5
+                                color: Math.abs(toolState.uiScale - modelData.scale) < 0.03 ? Qt.rgba(56/255, 189/255, 248/255, 0.3) : Qt.rgba(255, 255, 255, 0.08)
+                                border.color: Math.abs(toolState.uiScale - modelData.scale) < 0.03 ? "#38bdf8" : Qt.rgba(255, 255, 255, 0.15)
+                                border.width: 1
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.label
+                                    font.pixelSize: 9
+                                    font.bold: true
+                                    color: Math.abs(toolState.uiScale - modelData.scale) < 0.03 ? "#38bdf8" : "#cbd5e1"
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: toolState.setScale(modelData.scale)
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Ghost Pen Lifetime
                 Column {

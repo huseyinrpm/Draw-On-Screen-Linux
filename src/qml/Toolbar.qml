@@ -10,37 +10,41 @@ Item {
     property bool isCollapsed: false
     property bool isVertical: toolState.isVerticalLayout
     property bool isSettingsOpen: false
+    property real uiScale: toolState ? toolState.uiScale : 1.0
+    property real barThickness: Math.round(52 * uiScale)
+    property real drawerWidth: Math.round(340 * uiScale)
+    property real drawerHeight: Math.round(450 * uiScale)
 
     width: {
         if (isCollapsed) return collapsedPill.width
-        if (isVertical) return isSettingsOpen ? (52 + 8 + 330) : 52
-        return isSettingsOpen ? Math.max(contentRow.width + 20, 330) : (contentRow.width + 20)
+        if (isVertical) return isSettingsOpen ? (barThickness + 8 + drawerWidth) : barThickness
+        return isSettingsOpen ? Math.max(contentRow.width + Math.round(20 * uiScale), drawerWidth) : (contentRow.width + Math.round(20 * uiScale))
     }
 
     height: {
         if (isCollapsed) return collapsedPill.height
-        if (isVertical) return Math.max(contentCol.height + 20, isSettingsOpen ? 380 : 0)
-        return isSettingsOpen ? (52 + 8 + 380) : 52
+        if (isVertical) return Math.max(contentCol.height + Math.round(20 * uiScale), isSettingsOpen ? drawerHeight : 0)
+        return isSettingsOpen ? (barThickness + 8 + drawerHeight) : barThickness
     }
 
     // ==================== 1. COLLAPSED PILL ====================
     Rectangle {
         id: collapsedPill
         visible: root.isCollapsed
-        width: 100
-        height: 44
-        radius: 22
+        width: Math.round(100 * root.uiScale)
+        height: Math.round(44 * root.uiScale)
+        radius: Math.round(22 * root.uiScale)
         color: Qt.rgba(15/255, 23/255, 42/255, 0.94)
         border.color: Qt.rgba(255, 255, 255, 0.18)
         border.width: 1
 
         Row {
             anchors.centerIn: parent
-            spacing: 4
+            spacing: Math.round(4 * root.uiScale)
 
             Item {
-                width: 16
-                height: 32
+                width: Math.round(16 * root.uiScale)
+                height: Math.round(32 * root.uiScale)
                 anchors.verticalCenter: parent.verticalCenter
                 Canvas {
                     anchors.fill: parent
@@ -107,9 +111,9 @@ Item {
         // Main Horizontal Card
         Rectangle {
             id: mainCardHoriz
-            width: contentRow.width + 20
-            height: 52
-            radius: 16
+            width: contentRow.width + Math.round(20 * root.uiScale)
+            height: root.barThickness
+            radius: Math.round(16 * root.uiScale)
             color: Qt.rgba(15/255, 23/255, 42/255, 0.92)
             border.color: Qt.rgba(255, 255, 255, 0.16)
             border.width: 1
@@ -136,12 +140,12 @@ Item {
             Row {
                 id: contentRow
                 anchors.centerIn: parent
-                spacing: 4
+                spacing: Math.round(4 * root.uiScale)
 
                 // Handle
                 Item {
-                    width: 14
-                    height: 36
+                    width: Math.round(14 * root.uiScale)
+                    height: Math.round(36 * root.uiScale)
                     anchors.verticalCenter: parent.verticalCenter
                     Canvas {
                         anchors.fill: parent
@@ -176,8 +180,8 @@ Item {
                 // Logo Brand Icon
                 Image {
                     source: "qrc:/resources/icons/drawonscreen.svg"
-                    width: 22
-                    height: 22
+                    width: Math.round(22 * root.uiScale)
+                    height: Math.round(22 * root.uiScale)
                     sourceSize.width: 44
                     sourceSize.height: 44
                     anchors.verticalCenter: parent.verticalCenter
@@ -193,7 +197,7 @@ Item {
                     onClicked: toolState.setInteractionModeEnum(1)
                 }
 
-                Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
+                Rectangle { width: 1; height: Math.round(24 * root.uiScale); color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
 
                 // Pen
                 IconButton {
@@ -231,7 +235,7 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(3) }
                 }
 
-                Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
+                Rectangle { width: 1; height: Math.round(24 * root.uiScale); color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
 
                 // Shapes
                 IconButton {
@@ -272,7 +276,7 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(8) }
                 }
 
-                Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
+                Rectangle { width: 1; height: Math.round(24 * root.uiScale); color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
 
                 // Color Palette
                 ColorPalette {
@@ -295,7 +299,7 @@ Item {
                     onClicked: root.isSettingsOpen = !root.isSettingsOpen
                 }
 
-                Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
+                Rectangle { width: 1; height: Math.round(24 * root.uiScale); color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
 
                 // Whiteboard
                 IconButton {
@@ -322,7 +326,7 @@ Item {
                     onClicked: toolState.toggleOrientation()
                 }
 
-                Rectangle { width: 1; height: 24; color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
+                Rectangle { width: 1; height: Math.round(24 * root.uiScale); color: Qt.rgba(255, 255, 255, 0.12); anchors.verticalCenter: parent.verticalCenter }
 
                 // Undo / Redo / Clear / Camera / Minimize / Close
                 IconButton {
@@ -373,9 +377,9 @@ Item {
         // Main Vertical Card
         Rectangle {
             id: mainCardVert
-            width: 52
-            height: contentCol.height + 20
-            radius: 16
+            width: root.barThickness
+            height: contentCol.height + Math.round(20 * root.uiScale)
+            radius: Math.round(16 * root.uiScale)
             color: Qt.rgba(15/255, 23/255, 42/255, 0.92)
             border.color: Qt.rgba(255, 255, 255, 0.16)
             border.width: 1
@@ -402,12 +406,12 @@ Item {
             Column {
                 id: contentCol
                 anchors.centerIn: parent
-                spacing: 3
+                spacing: Math.round(3 * root.uiScale)
 
                 // Drag handle top
                 Item {
-                    width: 36
-                    height: 14
+                    width: Math.round(36 * root.uiScale)
+                    height: Math.round(14 * root.uiScale)
                     anchors.horizontalCenter: parent.horizontalCenter
                     Canvas {
                         anchors.fill: parent
@@ -442,8 +446,8 @@ Item {
                 // Logo Brand Icon
                 Image {
                     source: "qrc:/resources/icons/drawonscreen.svg"
-                    width: 22
-                    height: 22
+                    width: Math.round(22 * root.uiScale)
+                    height: Math.round(22 * root.uiScale)
                     sourceSize.width: 44
                     sourceSize.height: 44
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -459,7 +463,7 @@ Item {
                     onClicked: toolState.setInteractionModeEnum(1)
                 }
 
-                Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
+                Rectangle { width: Math.round(28 * root.uiScale); height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
 
                 // Tools
                 IconButton {
@@ -491,7 +495,7 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(3) }
                 }
 
-                Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
+                Rectangle { width: Math.round(28 * root.uiScale); height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
 
                 // Shapes
                 IconButton {
@@ -530,7 +534,7 @@ Item {
                     onClicked: { toolState.setInteractionModeEnum(0); toolState.selectTool(8) }
                 }
 
-                Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
+                Rectangle { width: Math.round(28 * root.uiScale); height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
 
                 // Palette & Settings
                 ColorPalette {
@@ -545,7 +549,7 @@ Item {
                     onClicked: root.isSettingsOpen = !root.isSettingsOpen
                 }
 
-                Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
+                Rectangle { width: Math.round(28 * root.uiScale); height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
 
                 // Extras
                 IconButton {
@@ -568,7 +572,7 @@ Item {
                     onClicked: toolState.toggleOrientation()
                 }
 
-                Rectangle { width: 28; height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
+                Rectangle { width: Math.round(28 * root.uiScale); height: 1; color: Qt.rgba(255, 255, 255, 0.12); anchors.horizontalCenter: parent.horizontalCenter }
 
                 // Actions
                 IconButton {

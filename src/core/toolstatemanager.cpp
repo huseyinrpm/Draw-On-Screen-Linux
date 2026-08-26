@@ -22,6 +22,7 @@ void ToolStateManager::loadSettings()
     m_currentWidth = settings.value(QStringLiteral("currentWidth"), 4.0).toReal();
     m_isFilled = settings.value(QStringLiteral("isFilled"), false).toBool();
     m_isVerticalLayout = settings.value(QStringLiteral("isVerticalLayout"), false).toBool();
+    m_uiScale = qBound(0.70, settings.value(QStringLiteral("uiScale"), 1.0).toReal(), 2.0);
     m_ghostDurationMs = settings.value(QStringLiteral("ghostDurationMs"), 3000).toInt();
     m_fontSize = settings.value(QStringLiteral("fontSize"), 28).toInt();
     m_savedToolbarX = settings.value(QStringLiteral("toolbarX"), 80).toInt();
@@ -43,6 +44,7 @@ void ToolStateManager::saveSettings()
     settings.setValue(QStringLiteral("currentWidth"), m_currentWidth);
     settings.setValue(QStringLiteral("isFilled"), m_isFilled);
     settings.setValue(QStringLiteral("isVerticalLayout"), m_isVerticalLayout);
+    settings.setValue(QStringLiteral("uiScale"), m_uiScale);
     settings.setValue(QStringLiteral("ghostDurationMs"), m_ghostDurationMs);
     settings.setValue(QStringLiteral("fontSize"), m_fontSize);
     settings.setValue(QStringLiteral("toolbarX"), m_savedToolbarX);
@@ -271,6 +273,16 @@ void ToolStateManager::setAreDrawingsVisible(bool visible)
     if (m_areDrawingsVisible != visible) {
         m_areDrawingsVisible = visible;
         emit areDrawingsVisibleChanged(visible);
+    }
+}
+
+void ToolStateManager::setUiScale(qreal scale)
+{
+    const qreal bounded = qBound(0.70, scale, 2.0);
+    if (qAbs(m_uiScale - bounded) > 0.001) {
+        m_uiScale = bounded;
+        emit uiScaleChanged(bounded);
+        saveSettings();
     }
 }
 
