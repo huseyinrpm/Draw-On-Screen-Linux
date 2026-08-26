@@ -118,8 +118,8 @@ Depoyu klonlayıp kurulum betiğini çalıştırmanız yeterlidir:
 
 ```bash
 # 1. Depoyu klonlayın
-git clone https://github.com/kullanici-adiniz/DrawOnScreen.git
-cd DrawOnScreen
+git clone https://github.com/huseyinrpm/Draw-On-Screen-Linux.git
+cd Draw-On-Screen-Linux
 
 # 2. Kurulum betiğini çalıştırın (Derler, ikonları üretir ve sisteme ekler)
 ./install.sh
