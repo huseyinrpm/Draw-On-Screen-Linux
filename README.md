@@ -100,6 +100,35 @@ cd Draw-On-Screen-Linux
 ./install.sh
 ```
 
+<details>
+<summary><b>📦 Manuel Paket Yükleme (Paketleri Kendiniz Kurmak İsterseniz - Tıklayın)</b></summary>
+
+Eğer paketleri `install.sh` yerine kendiniz elle kurmak isterseniz:
+
+#### 🔹 Arch Linux / Manjaro / CachyOS / EndeavourOS
+```bash
+sudo pacman -S --needed cmake ninja gcc extra-cmake-modules \
+                       qt6-base qt6-declarative qt6-wayland \
+                       layer-shell-qt kglobalaccel librsvg
+```
+
+#### 🔹 Ubuntu 24.04+ / Debian 13+ / Pardus 23+ / Linux Mint
+```bash
+sudo apt update
+sudo apt install build-essential cmake ninja-build extra-cmake-modules \
+                 qt6-base-dev qt6-declarative-dev qt6-wayland \
+                 liblayershellqt-dev libkf6globalaccel-dev librsvg2-bin
+```
+
+#### 🔹 Fedora / RHEL / Nobara
+```bash
+sudo dnf install gcc-c++ cmake ninja-build extra-cmake-modules \
+                 qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qtwayland-devel \
+                 layer-shell-qt-devel kf6-kglobalaccel-devel librsvg2-tools
+```
+
+</details>
+
 Kurulum tamamlandıktan sonra:
 - **Başlat Menüsünden:** `DrawOnScreen` yazarak açabilirsiniz.
 - **KRunner (Alt + Space):** `drawonscreen` yazarak başlatabilirsiniz.
