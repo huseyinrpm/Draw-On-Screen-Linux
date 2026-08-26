@@ -13,7 +13,7 @@ Item {
     property real currentVal: 1.0
 
     width: Math.round(340 * uiScale)
-    height: isOpened ? Math.round(450 * uiScale) : 0
+    height: isOpened ? Math.round(480 * uiScale) : 0
     visible: isOpened
     clip: true
 
@@ -160,9 +160,9 @@ Item {
 
                 // HSV Color Picker Wheel
                 Rectangle {
-                    width: 180
-                    height: 180
-                    radius: 90
+                    width: Math.round(140 * root.uiScale)
+                    height: Math.round(140 * root.uiScale)
+                    radius: width / 2
                     anchors.horizontalCenter: parent.horizontalCenter
                     color: "transparent"
 
@@ -198,14 +198,14 @@ Item {
                     // Touch Indicator
                     Rectangle {
                         id: hsvThumb
-                        width: 16
-                        height: 16
-                        radius: 8
+                        width: Math.round(14 * root.uiScale)
+                        height: Math.round(14 * root.uiScale)
+                        radius: width / 2
                         color: toolState.currentColor
                         border.color: "#ffffff"
                         border.width: 2
-                        x: 90 - 8
-                        y: 90 - 8
+                        x: parent.width / 2 - width / 2
+                        y: parent.height / 2 - height / 2
 
                         Behavior on x { NumberAnimation { duration: 60 } }
                         Behavior on y { NumberAnimation { duration: 60 } }
@@ -228,8 +228,8 @@ Item {
                             root.currentSat = dist / (width / 2);
                             root.updateColorFromHSV();
 
-                            hsvThumb.x = cx + Math.cos(angle * Math.PI / 180) * dist - 8;
-                            hsvThumb.y = cy + Math.sin(angle * Math.PI / 180) * dist - 8;
+                            hsvThumb.x = cx + Math.cos(angle * Math.PI / 180) * dist - hsvThumb.width / 2;
+                            hsvThumb.y = cy + Math.sin(angle * Math.PI / 180) * dist - hsvThumb.height / 2;
                         }
 
                         onPressed: (mouse) => updateFromPos(mouse)
@@ -239,11 +239,59 @@ Item {
                     }
                 }
 
+                // Fırça Kalınlığı (Brush Thickness)
+                Column {
+                    width: parent.width
+                    spacing: 2
+                    Row {
+                        width: parent.width
+                        Text { text: "✏️ Fırça & Çizim Kalınlığı:"; font.pixelSize: 11; font.bold: true; color: "#f8fafc" }
+                        Item { width: 50 }
+                        Row {
+                            spacing: 6
+                            anchors.verticalCenter: parent.verticalCenter
+                            Rectangle {
+                                width: Math.max(4, Math.min(18, toolState.currentWidth))
+                                height: width
+                                radius: width / 2
+                                color: toolState.currentColor
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text {
+                                text: Math.round(toolState.currentWidth) + " px"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: "#38bdf8"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+                    Slider {
+                        id: brushWidthSlider
+                        width: parent.width
+                        from: 1
+                        to: 40
+                        stepSize: 1
+                        value: toolState.currentWidth
+                        onMoved: toolState.selectWidth(value)
+                    }
+                }
+
                 // Brightness / Value Slider
                 Column {
                     width: parent.width
                     spacing: 2
-                    Text { text: "💡 Renk Parlaklığı:"; font.pixelSize: 11; font.bold: true; color: "#f8fafc" }
+                    Row {
+                        width: parent.width
+                        Text { text: "💡 Renk Parlaklığı:"; font.pixelSize: 11; font.bold: true; color: "#f8fafc" }
+                        Item { width: 100 }
+                        Text {
+                            text: "%" + Math.round(root.currentVal * 100)
+                            font.pixelSize: 11
+                            font.bold: true
+                            color: "#fbbf24"
+                        }
+                    }
                     Slider {
                         id: valSlider
                         width: parent.width

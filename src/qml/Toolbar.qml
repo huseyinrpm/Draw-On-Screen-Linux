@@ -13,7 +13,7 @@ Item {
     property real uiScale: toolState ? toolState.uiScale : 1.0
     property real barThickness: Math.round(52 * uiScale)
     property real drawerWidth: Math.round(340 * uiScale)
-    property real drawerHeight: Math.round(450 * uiScale)
+    property real drawerHeight: Math.round(480 * uiScale)
 
     width: {
         if (isCollapsed) return collapsedPill.width
