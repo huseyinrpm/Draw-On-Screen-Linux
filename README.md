@@ -63,6 +63,9 @@ Doğrudan Wayland **`zwlr_layer_shell_v1`** protokolü ve **Qt6 Quick / C++20** 
 - 💾 **Ayarların Otomatik Kaydedilmesi:**
   Menüyü ekranın neresine bıraktıysanız, son renk/araç seçimleriniz ve kısayollarınız çıkışta `QSettings` ile güvenle saklanır; bir sonraki açılışta aynı şekilde açılır.
 
+- 🏫 **Akıllı Tahta & Dokunmatik Ekran Desteği (MEB Pardus / Fatih Projesi):**
+  Okullardaki, dershanelerdeki ve üniversitelerdeki dokunmatik akıllı tahtalarla (Pardus / Debian / Ubuntu) %100 yerel ve uyumlu çalışır. Catmull-Rom Bézier eğri algoritması sayesinde parmakla veya tahta kalemiyle pürüzsüz yazı yazma imkanı sunar.
+
 - 📱 **Tam Linux Masaüstü Entegrasyonu:**
   512x512'ye kadar yüksek çözünürlüklü ikon seti, `.desktop` başlatıcısı ile KDE Kickoff, GNOME Dash veya KRunner üzerinden tek tıkla başlatılabilir.
 
@@ -84,44 +87,16 @@ Doğrudan Wayland **`zwlr_layer_shell_v1`** protokolü ve **Qt6 Quick / C++20** 
 
 ---
 
-## 📦 Kurulum Gereksinimleri (Dependencies)
+## 🚀 Hızlı Kurulum (Otomatik Bağımlılık Denetlemeli Tek Tık Kurulum)
 
-Projeyi derlemek için sisteminizde Qt6, LayerShellQt ve KF6 kütüphaneleri bulunmalıdır:
-
-### 🔹 Arch Linux / Manjaro / EndeavourOS / CachyOS
-```bash
-sudo pacman -S --needed base-devel cmake ninja gcc extra-cmake-modules \
-                       qt6-base qt6-declarative qt6-wayland \
-                       layer-shell-qt kglobalaccel librsvg
-```
-
-### 🔹 Fedora / RHEL / Nobara
-```bash
-sudo dnf install gcc-c++ cmake ninja-build extra-cmake-modules \
-                 qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qtwayland-devel \
-                 layer-shell-qt-devel kf6-kglobalaccel-devel librsvg2-tools
-```
-
-### 🔹 Ubuntu 24.04+ / Debian 13+
-```bash
-sudo apt update
-sudo apt install build-essential cmake ninja-build extra-cmake-modules \
-                 qt6-base-dev qt6-declarative-dev qt6-wayland \
-                 liblayershellqt-dev libkf6globalaccel-dev librsvg2-bin
-```
-
----
-
-## 🚀 Hızlı Kurulum (Tek Tıkla)
-
-Depoyu klonlayıp kurulum betiğini çalıştırmanız yeterlidir:
+`install.sh` betiği hangi Linux dağıtımında olduğunuzu otomatik tespit eder. Sisteminizde Qt6 veya derleme araçları eksikse **sizden onay isteyerek paket yöneticinizle (`pacman`, `apt`, `dnf`) otomatik olarak kurar** ve uygulamayı başlat menünüze yerleştirir:
 
 ```bash
 # 1. Depoyu klonlayın
 git clone https://github.com/huseyinrpm/Draw-On-Screen-Linux.git
 cd Draw-On-Screen-Linux
 
-# 2. Kurulum betiğini çalıştırın (Derler, ikonları üretir ve sisteme ekler)
+# 2. Kurulum betiğini çalıştırın (Eksik paketleri denetler, onayınızla kurar ve uygulamayı sisteme ekler)
 ./install.sh
 ```
 
