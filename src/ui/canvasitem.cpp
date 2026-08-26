@@ -13,6 +13,7 @@ CanvasItem::CanvasItem(QQuickItem* parent)
     : QQuickPaintedItem(parent)
 {
     setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
+    setAcceptHoverEvents(true);
     setAntialiasing(true);
     setOpaquePainting(false);
     setSmooth(true);
@@ -86,11 +87,8 @@ void CanvasItem::setToolbarRect(const QRect& rect)
 
 void CanvasItem::onLaserDirtyRect(const QRectF& dirtyRect)
 {
-    if (!dirtyRect.isNull()) {
-        update(dirtyRect.toAlignedRect());
-    } else {
-        update();
-    }
+    Q_UNUSED(dirtyRect);
+    update();
 }
 
 void CanvasItem::onCursorBlink()
@@ -204,7 +202,6 @@ void CanvasItem::paint(QPainter* painter)
 
         if (tool == ToolType::Highlighter) {
             painter->save();
-            painter->setCompositionMode(QPainter::CompositionMode_Multiply);
             QColor hl = col;
             hl.setAlphaF(0.40);
             QPen pen(hl, baseW, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
@@ -335,10 +332,36 @@ void CanvasItem::mouseMoveEvent(QMouseEvent* ev)
         return;
     }
 
+    if (m_stateMgr->currentTool() == ToolType::Laser && m_laserEngine) {
+        m_laserEngine->addPoint(ev->position(), 1.0);
+        update();
+        ev->accept();
+        return;
+    }
+
     if (m_isDrawing) {
         handleMovePoint(ev->position(), 1.0);
         ev->accept();
     }
+}
+
+void CanvasItem::hoverMoveEvent(QHoverEvent* ev)
+{
+    m_lastMousePos = ev->position();
+
+    if (!m_stateMgr || m_stateMgr->interactionMode() == InteractionMode::DesktopPassthrough) {
+        ev->ignore();
+        return;
+    }
+
+    if (m_stateMgr->currentTool() == ToolType::Laser && m_laserEngine) {
+        m_laserEngine->addPoint(ev->position(), 1.0);
+        update();
+        ev->accept();
+        return;
+    }
+
+    ev->ignore();
 }
 
 void CanvasItem::mouseReleaseEvent(QMouseEvent* ev)
@@ -382,6 +405,7 @@ void CanvasItem::handleStartPoint(const QPointF& pos, qreal pressure, qreal tilt
 
     if (tool == ToolType::Laser && m_laserEngine) {
         m_laserEngine->addPoint(pos, pressure);
+        update();
     } else if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::Pen || tool == ToolType::Highlighter || tool == ToolType::GhostPen) {
@@ -398,6 +422,7 @@ void CanvasItem::handleMovePoint(const QPointF& pos, qreal pressure, qreal tiltX
     const auto tool = m_stateMgr->currentTool();
     if (tool == ToolType::Laser && m_laserEngine) {
         m_laserEngine->addPoint(pos, pressure);
+        update();
     } else if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::Pen || tool == ToolType::Highlighter || tool == ToolType::GhostPen) {
@@ -424,6 +449,7 @@ void CanvasItem::handleReleasePoint(const QPointF& pos)
 
     if (tool == ToolType::Laser && m_laserEngine) {
         m_laserEngine->addPoint(pos, m_lastPressure);
+        update();
     } else if (tool == ToolType::Eraser) {
         performVectorErase(pos, m_stateMgr->currentWidth() * 3.0);
     } else if (tool == ToolType::GhostPen && m_activePoints.size() >= 1) {

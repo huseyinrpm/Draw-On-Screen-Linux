@@ -199,7 +199,6 @@ void CanvasDocument::render(QPainter& painter, const QRectF& clipRect) const
 
         if (stroke.tool == ToolType::Highlighter) {
             painter.save();
-            painter.setCompositionMode(QPainter::CompositionMode_Multiply);
             QColor hlColor = stroke.color;
             hlColor.setAlphaF(0.40);
             QPen pen(hlColor, stroke.baseWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);

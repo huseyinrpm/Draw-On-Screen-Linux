@@ -257,7 +257,6 @@ void CanvasWindow::paintEvent(QPaintEvent* ev)
 
         if (tool == ToolType::Highlighter) {
             p.save();
-            p.setCompositionMode(QPainter::CompositionMode_Multiply);
             QColor hl = col;
             hl.setAlphaF(0.40);
             QPen pen(hl, baseW, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);

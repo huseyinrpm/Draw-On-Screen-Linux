@@ -52,6 +52,7 @@ protected:
     void mousePressEvent(QMouseEvent* ev) override;
     void mouseMoveEvent(QMouseEvent* ev) override;
     void mouseReleaseEvent(QMouseEvent* ev) override;
+    void hoverMoveEvent(QHoverEvent* ev) override;
     void keyPressEvent(QKeyEvent* ev) override;
 
 private slots:
